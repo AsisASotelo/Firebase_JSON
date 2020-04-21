@@ -23,9 +23,13 @@ def main():
 
     url = 'https://inf55-6540d.firebaseio.com/sample.json'
     data = {}
+
+############# Loads the data into Firebase ##############
+
+
     with open(csvFilePath) as csvFile:
         dialect = csv.Sniffer().sniff(csvFile.read(1024))
-        csv.register_dialect("custom",dialect)
+        csv.register_dialect("custom",dialect) 
         csvFile.seek(0)
         reader = csv.DictReader(csvFile,dialect="custom")
         fieldnames = [reader.fieldnames[i].replace("#","").replace(" ","") for i in range(len(reader.fieldnames))]
@@ -39,6 +43,14 @@ def main():
             id = row[fieldnames[0]]
             data[id]=row
             print(data)
+
+    
+
+#################################################################
+#################################################################
+
+
+
 
 
 
