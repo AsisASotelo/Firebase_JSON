@@ -51,35 +51,31 @@ def clean(x):
     y = ''.join([i for i in y if(not i.isdigit())])
     return y
 
-
-
-def main():
-
-    csvFilePath = 'city.csv'
-    
-    index = {}
-
-
-    with open(csvFilePath, 'r',encoding='utf8',errors='replace') as csvFile:
+def word_lister(filePathName):
+    with open(filePathName, 'r',encoding='utf8',errors='replace') as csvFile:
         text = csvFile.read()
         result = clean(text).lower()
         result = result.split()
         word_list = [word for word in result if word not in STOP_WORDS]
         word_list = list(set(word_list))
-        print(len(word_list))
-    bar = IncrementalBar('Progress', max = len(word_list))
+    
+    return word_list
 
+def indexer(filePathName,list_of_words):
+
+    index = {}
+    word_list = list_of_words
+    bar = IncrementalBar(filePathName, max = len(word_list))
     
 
-    with open(csvFilePath,'r',encoding="utf8",errors='replace') as csvFile:
+    with open(filePathName,'r',encoding="utf8",errors='replace') as csvFile:
         dialect = csv.Sniffer().sniff(csvFile.read(1024))
         csv.register_dialect("custom",dialect) 
         csvFile.seek(0)
         dict_file = csv.DictReader(csvFile,dialect = "custom")
         for word in word_list:
-            bar.next()
             if word not in index:
-                index.update({word:{csvFilePath:{}}})
+                index.update({word:{filePathName:{}}})
             
             for row in dict_file:
                 
@@ -88,15 +84,34 @@ def main():
                     value = clean(value).lower().strip()
                     if word in value: # Checks to see if word is in attributes of row
                         #print(index[word].keys())
-                        if key in index[word][csvFilePath].keys(): # Checks if key is already in list
-                            index[word][csvFilePath][key].append(row[list(row.keys())[0]])
+                        if key in index[word][filePathName].keys(): # Checks if key is already in list
+                            index[word][filePathName][key].append(row[list(row.keys())[0]])
                             pass
                         else:
-                            index[word][csvFilePath].update({key :[] })
+                            index[word][filePathName].update({key :[row[list(row.keys())[0]]] })
             csvFile.seek(0)
 
-
+            bar.next()
     bar.finish()
+    print("Finished indexing %s ." % filePathName)
+    return index
+
+
+
+def main():
+
+    filePath = 'sample2.csv'
+
+    word_list = word_lister(filePath)
+    #print(word_list)
+
+    index = indexer(filePath,word_list)
+
+    print(index)
+
+
+    
+
 
     
 
