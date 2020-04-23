@@ -51,7 +51,7 @@ def clean(x):
     y = ''.join([i for i in y if(not i.isdigit())])
     return y
 
-def word_lister(filePathName):
+def word_lister(filePathName): 
     with open(filePathName, 'r',encoding='utf8',errors='replace') as csvFile:
         text = csvFile.read()
         result = clean(text).lower()
@@ -82,9 +82,8 @@ def indexer(filePathName,list_of_words):
                 
                 for key, value in row.items():
                     value = clean(value).lower().strip()
-                    if word in value: # Checks to see if word is in attributes of row
-                        #print(index[word].keys())
-                        if key in index[word][filePathName].keys(): # Checks if key is already in list
+                    if word in value: # Checks to see if word is in attributes values of row.
+                        if key in index[word][filePathName].keys(): # Checks if attribute key is already in list.
                             index[word][filePathName][key].append(row[list(row.keys())[0]])
                             pass
                         else:
@@ -100,35 +99,13 @@ def indexer(filePathName,list_of_words):
 
 def main():
 
-    filePath = 'sample2.csv'
+    filePath = 'city.csv'
 
     word_list = word_lister(filePath)
-    #print(word_list)
 
     index = indexer(filePath,word_list)
 
     print(index)
-
-
-    
-
-
-    
-
-
-
-
-
-
-
-    
-
-
-    
-
-
-        
-
 
 
 
