@@ -11,16 +11,19 @@ import requests
 import numpy
 import re
 import json
+import argparse
 from progress.bar import IncrementalBar
+import time
 """load.py - 1. Loads data to Firebase 2. Creates inverted of Index and Uploads to Firebase
 
 Arguments - pathname1 pathname2 pathname3
 """
-FIREBASE_URL='https://inf55-6540d.firebaseio.com/sample.json'
+FIREBASE_URL='https://inf55-6540d.firebaseio.com/'
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument("filenames", nargs = 3,  help = "file path of first comma seperated file")
-# args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument("filenames", nargs = "*",  help = "file path of first comma seperated file")
+args = parser.parse_args()
+filenames= args.filenames
 
 
 
@@ -53,7 +56,7 @@ STOP_WORDS = ['#','NULL','i', 'me', 'my', 'myself',\
 #Definiton and Implementation of Methods
 def clean_keys(x):
     y = ''
-    s = ["'", "/", ".", ",","#","\\"]
+    s = ["'", "/", ".", ",","#","\\","[","]","(",")","`","-"]
     for i in x:
         if i in s:
             y+= ' '
@@ -63,10 +66,9 @@ def clean_keys(x):
     y = ''.join([i for i in y])
     return y
 
-
 def clean(x):
     y = ''
-    s = ["'", "/", ".", ",","#"]
+    s = ["'", "/", ".", ",","#","[","]","(",")","`","-"]
     for i in x:
         if i in s:
             y+= ' '
@@ -88,8 +90,14 @@ def word_lister(filePathName):  # // Returns List of Words Given File Name
 
 def loader(file_Path_Name):
     csv_File_Path = file_Path_Name
+    file_name_url = FIREBASE_URL + file_Path_Name.replace(".csv","") + ".json"
 
     data = {}
+
+    print("Starting to load %s one second \n" % file_Path_Name)
+    print("loading ...")
+    time.sleep(2)
+    
 
     with open(csv_File_Path,'r',encoding='utf8',errors='ignore') as csv_File:
         dialect = csv.Sniffer().sniff(csv_File.read(1024))
@@ -110,15 +118,28 @@ def loader(file_Path_Name):
     #Send to Firebase
 
     data_json = json.dumps(data)
+    response = requests.put(file_name_url,data_json)
 
-    response = requests.put(FIREBASE_URL,data_json)
-    print(type(response.status_code))
+    if response.status_code == 200:
+        print("Finished loading %s into FIREBASE.\n" % file_Path_Name)
+    else:
+        print("Error Loading\n")
     
 def indexer(filePathName,list_of_words):
 
     index = {}
     word_list = list_of_words
     bar = IncrementalBar(filePathName, max = len(word_list))
+    index_url = FIREBASE_URL + "index.json"
+
+
+    print("Starting to index %s one second" % filePathName)
+    time.sleep(.5)
+    print(".")
+    time.sleep(.5)
+    print(".")
+    time.sleep(.5)
+    print(".")
     
 
     with open(filePathName,'r',encoding="utf8",errors='replace') as csv_File:
@@ -127,11 +148,11 @@ def indexer(filePathName,list_of_words):
         csv_File.seek(0)
         dict_file = csv.DictReader(csv_File,dialect = "custom")
         file_title= filePathName.replace(".csv","")
-        for word in word_list:
-            if word not in index:
-                index.update({word:{file_title:{}}})
+        for word in word_list: # Loops over each normalized word found in CSV with word_lister
+            if word not in index: # // Checks to see if word is already in index 
+                index.update({word:{file_title:{}}}) # // If not adds to index
             
-            for row in dict_file:
+            for row in dict_file: # // Otherwise proceeds to check if word is found in any of the attribute fields
                 
                 
                 for key, value in row.items():
@@ -150,26 +171,34 @@ def indexer(filePathName,list_of_words):
             bar.next()
     bar.finish()
     print("Finished indexing %s ." % filePathName)
+    print("Uploading index to FIREBASE ...")
 
     index_json = json.dumps(index)
-    print(index_json)
 
-    with open("json_out.txt",'w',encoding = 'utf8',errors='ignore') as outpath:
-        json.dump(index,outpath, separators=(",",":"),indent=4,)
+    response = requests.put(index_url,data =index_json)
+    
+    if response.status_code == 200:
+        print("Finished uploading index of %s ." % filePathName)
+    else:
+        print("Error Uploading")
 
-    response = requests.put(FIREBASE_URL,index_json)
-
-    print(response.json())
+    
    
 # Main Method 
 
 def main():
 
-    filePath = 'sample2.csv'
+    # Loading of Each File
 
-    word_list = word_lister(filePath)
-    # loader_test = loader(filePath)
-    indexer_test = indexer(filePath,word_list)
+    for filename in filenames:
+        word_list = word_lister(filename)
+        loader(filename)
+
+    # Indexing of Each File
+
+    for filename in filenames:
+        word_list = word_lister(filename)
+        indexer(filename,word_list)
 
 
 
