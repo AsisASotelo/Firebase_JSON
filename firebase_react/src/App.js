@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import logo from './logo.svg';
+import Header from './HeaderComponent';
 import './App.css';
 import * as firebase from 'firebase';
 import "firebase/auth"
@@ -46,7 +46,9 @@ class App extends Component {
   render(){
     return (
       <div className="App">
+        <Header></Header>
         <h1>{this.state.speed}</h1>
+        <input type="Search" placeholder="Search Database "></input>
       </div>
     );
   }
