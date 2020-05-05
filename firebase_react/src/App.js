@@ -4,6 +4,7 @@ import './App.css';
 import * as firebase from 'firebase';
 import "firebase/auth"
 import "firebase/firestore";
+import Search from './Search';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtUWOkZTugbEAU1DlaGnb1-GuJhyh9LSQ",
@@ -48,7 +49,7 @@ class App extends Component {
       <div className="App">
         <Header></Header>
         <h1>{this.state.speed}</h1>
-        <input type="Search" placeholder="Search Database "></input>
+        <Search/>
       </div>
     );
   }

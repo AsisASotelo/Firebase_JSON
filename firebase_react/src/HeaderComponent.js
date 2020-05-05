@@ -23,12 +23,31 @@ class Header extends React.Component {
 
         return(
             <>
-            <Jumbotron>
+            <Navbar dark >
+                <div className = "container">
+                <NavbarToggler onClick={this.toggleNav}/>
+                    <NavbarBrand className="mr-auto" href="/">
+                        <img src="assets/images/asis_logo.png" height="200" width="200"
+                            alt="logo"/>
+                    </NavbarBrand>
+
+                    <Nav navbar>
+                        <NavItem className="nav-link" to='/home'>
+                            Home
+                        </NavItem>
+                    </Nav>
+                </div>
+
+            </Navbar>
+
+
+
+            <Jumbotron fluid>
                 <div className="container">
                     <div className="row row-header">
                         <div className="col-12 col-sm-6">
-                            <h1>Sandy's Food Service</h1>
-                            <p>We take inspiration from the World's best cuisines.</p>
+                            <h1>Firebase DB Search</h1>
+                            <p>Search Project built with React</p>
 
                         </div>
 
