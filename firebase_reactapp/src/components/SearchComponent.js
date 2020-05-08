@@ -19,13 +19,68 @@ const firebaseConfig = {
 
 
 
+function RenderTable(object) {
+
+
+
+    if(object!= null){
+        for (let key in object) {
+           let object2 = object[key];
+           for (let key2 in object2) {
+            let object3 = object2[key2];
+                for (let key3 in object3) {
+                    let object4 = object3[key3];
+                    for (let key4 in object4) {
+                        let value4 = object4[key4];
+                        return(
+                            <tbody>
+                            {value4.map((item,index)=> {
+                            
+                            index= index+1;
+                            
+                            return (
+                                <tr>
+                                    <th scope="row">{index}</th>
+                                    <td>{item}</td>
+                                    <td>{key4}</td>
+                                    <td>{key3}</td>
+                                </tr>
+                            );
+
+                            })}
+                        </tbody>
+
+                        )
+                    
+                    }
+                
+                }
+           
+            }
+           
+        }
+
+    }
+
+
+    else{
+        return(
+            <div></div>
+        );
+    }
+
+    return(<div></div>);
+
+
+}
+
 
 class Search extends Component{
 
     constructor(props){
         super(props);
         this.state={
-            data_tuples: null,
+            data_tuple: [],
             searchKey: "",
             firebase_check: null,
         }
@@ -39,14 +94,21 @@ class Search extends Component{
 
         alert("A name was enter " + this.state.searchKey)
 
-        const userRef = firebase.database().ref().child(this.state.searchKey);
+        const userRef = firebase.database().ref("index/" + this.state.searchKey);
         
         userRef.on('value', snap =>{
+            
             this.setState({
-                data_tuples:snap.val()
-                
-            });
-            console.log(snap.val())
+                data_tuple:[snap.val()]
+
+            })
+
+            
+            
+
+
+            console.log([snap.val()])
+            console.log("value of data tuple is " + this.state.data_tuple)
         });
         event.preventDefault();
        
@@ -68,9 +130,15 @@ class Search extends Component{
             this.setState({
                 firebase_check:snap.val()    
             });
+
+
             console.log(snap.val())
         });
     }
+
+
+
+    
 
     
 
@@ -108,7 +176,7 @@ class Search extends Component{
                         <CardText>This is the search application for the world database! This application is linked to Firebase! Entering a keyword and hit the search button.</CardText>
                             <CardText>{this.state.firebase_check}</CardText>
                             <CardText>SearchKey:{this.state.searchKey}</CardText>
-                            <CardText>Test:{this.state.data_tuples}</CardText>
+                            
 
                         <Form className="form" onSubmit={this.handleSubmit }>
                             <FormGroup>
@@ -121,7 +189,7 @@ class Search extends Component{
                         
                             <div className="container">
                                 <div className="row justify-content-center">
-                                    <Button type="submit" className="btn" size="sm">Search</Button>
+                                    <Button type="submit" className="btn m-2" size="sm">Search</Button>
                                 </div>
                             </div>
                             </FormGroup>
@@ -132,39 +200,25 @@ class Search extends Component{
                 </div>
 
                 <div className="col-sm-12 col-md-7 ">
-                    <Card>
                     <Table responsive>
-                    <thead>
-                        <tr>
-                        <th>#</th>
-                        <th>{this.state.data_tuples}</th>
-                        <th>Attribute</th>
-                        <th>Rows</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <th scope="row">1</th>
-                        <td>ASIS SOTELO SUCSK NUTS</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                        </tr>
-                    </tbody>
+                        <thead>
+                            <th>#</th>
+                            <th>Row ID</th>
+                            <th>Attribute Name</th>
+                            <th>Document Name</th>
+                            
 
+
+                        </thead>
+                        <RenderTable object= {this.state.data_tuple} />
+                        
                     </Table>
-                    </Card>
+                    
+    
+                    
+
+                    
+                    
                     
 
 
