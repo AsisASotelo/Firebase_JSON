@@ -21,56 +21,23 @@ const firebaseConfig = {
 
 function RenderTable(object) {
 
-
-
-    if(object!= null){
-        for (let key in object) {
-           let object2 = object[key];
-           for (let key2 in object2) {
-            let object3 = object2[key2];
-                for (let key3 in object3) {
-                    let object4 = object3[key3];
-                    for (let key4 in object4) {
-                        let value4 = object4[key4];
-                        return(
-                            <tbody>
-                            {value4.map((item,index)=> {
-                            
-                            index= index+1;
-                            
-                            return (
-                                <tr>
-                                    <th scope="row">{index}</th>
-                                    <td>{item}</td>
-                                    <td>{key4}</td>
-                                    <td>{key3}</td>
-                                </tr>
-                            );
-
-                            })}
-                        </tbody>
-
-                        )
-                    
-                    }
-                
-                }
-           
-            }
-           
-        }
-
-    }
-
-
-    else{
+    if(object != null)
         return(
-            <div></div>
-        );
-    }
 
-    return(<div></div>);
+            <tbody>
+                {Object.keys(object).map()
+            </tbody>
 
+
+
+
+        )
+
+
+
+
+
+    
 
 }
 
