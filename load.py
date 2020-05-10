@@ -74,13 +74,11 @@ class IndexCreator:
                 for word in attribs:
                     word = word.lower()
                     if word not in self.INDEX: # Word has not been added to Index
-                        self.INDEX[word]={csv_file:{key2:[key]}}
+                        self.INDEX[word]={csv_file:[key]}
                     elif csv_file not in self.INDEX[word]: # CSV File not added to Word Index
-                        self.INDEX[word][csv_file] = {key2:[key]}
-                    elif key2 in self.INDEX[word][csv_file]: # Key has not been added to CSV FILE Array
-                        self.INDEX[word][csv_file][key2].append(key)
+                        self.INDEX[word][csv_file] = [key]
                     else:
-                        self.INDEX[word][csv_file][key2]=[key]
+                        self.INDEX[word][csv_file].append(key)
         
             bar.next()
         bar.finish()

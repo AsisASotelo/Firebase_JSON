@@ -53,6 +53,19 @@ class Header extends Component{
                     </div>
 
                 </Navbar>
+                <Jumbotron>
+                <div className="container">
+                    <div className="row row-header">
+                        <div className="col-12 mr-auto col-sm-6">
+                            <h1>INF 551 Database Project</h1>
+                            <p>Web Application/Firebase</p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </Jumbotron>
             </>
 
 

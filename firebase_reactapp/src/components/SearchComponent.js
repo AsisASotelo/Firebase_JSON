@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Card, CardText, CardBody, CardTitle, } from 'reactstrap';
-import { Form, FormGroup, Label, Input, FormFeedback, FormText,Button,Table} from 'reactstrap';
+import { Form,CardHeader, FormGroup, Label, Input, FormFeedback, FormText,Button,Table,} from 'reactstrap';
 import * as firebase from 'firebase';
 
 
@@ -21,51 +21,58 @@ const firebaseConfig = {
 
 function RenderTable(object) {
 
-
-
+    
     if(object!= null){
-        for (let key in object) {
-           let object2 = object[key];
-           for (let key2 in object2) {
-            let object3 = object2[key2];
-                for (let key3 in object3) {
-                    let object4 = object3[key3];
-                    for (let key4 in object4) {
-                        let value4 = object4[key4];
-                        return(
-                            <tbody>
-                            {value4.map((item,index)=> {
-                            
-                            index= index+1;
-                            
-                            return (
-                                <tr>
-                                    <th scope="row">{index}</th>
-                                    <td>{item}</td>
-                                    <td>{key4}</td>
-                                    <td>{key3}</td>
-                                </tr>
-                            );
+        
+        
+        console.log(Object.keys(object.object))
+        return(
+            <Table striped bordered hover responsive>
+                <thead class="table-dark">
+                    <tr>
+                    <th>Document</th>
+                    <th>Rows</th>
+                    </tr>
+                </thead>
 
-                            })}
-                        </tbody>
-
+                <tbody>
+                    {Object.keys(object.object).map((key,i) => (
+                        
+                            <tr class="table-active" key = {i}>
+                                <th scope="row">{key}</th>
+                                <td class="user">{object.object[key].toString()}</td>
+                            </tr>
                         )
-                    
-                    }
+                    )}
+
+                </tbody>
+
                 
-                }
+
+            </Table>
+            
+        )
            
-            }
-           
-        }
+
+
+       
 
     }
 
 
     else{
         return(
-            <div></div>
+            <Table>
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    </tr>
+                </thead>
+
+            </Table>
         );
     }
 
@@ -80,7 +87,7 @@ class Search extends Component{
     constructor(props){
         super(props);
         this.state={
-            data_tuple: [],
+            data_tuple:[],
             searchKey: "",
             firebase_check: null,
         }
@@ -99,7 +106,7 @@ class Search extends Component{
         userRef.on('value', snap =>{
             
             this.setState({
-                data_tuple:[snap.val()]
+                data_tuple:snap.val()
 
             })
 
@@ -107,8 +114,8 @@ class Search extends Component{
             
 
 
-            console.log([snap.val()])
-            console.log("value of data tuple is " + this.state.data_tuple)
+            // console.log(snap.val())
+            // console.log("value of data tuple is " + this.state.data_tuple)
         });
         event.preventDefault();
        
@@ -170,8 +177,11 @@ class Search extends Component{
 
               <div className="col-sm-12 col-md-5">
                     <Card body className = "text-center"inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
+                        <CardHeader>WELCOME</CardHeader>
                         <CardBody>
-                            <CardTitle >Welcome!</CardTitle>
+                            
+                            
+                            
                         </CardBody>
                         <CardText>This is the search application for the world database! This application is linked to Firebase! Entering a keyword and hit the search button.</CardText>
                             <CardText>{this.state.firebase_check}</CardText>
@@ -200,19 +210,9 @@ class Search extends Component{
                 </div>
 
                 <div className="col-sm-12 col-md-7 ">
-                    <Table responsive>
-                        <thead>
-                            <th>#</th>
-                            <th>Row ID</th>
-                            <th>Attribute Name</th>
-                            <th>Document Name</th>
-                            
-
-
-                        </thead>
-                        <RenderTable object= {this.state.data_tuple} />
-                        
-                    </Table>
+                    <Card>
+                        <RenderTable object= {this.state.data_tuple} /> 
+                    </Card>
                     
     
                     
